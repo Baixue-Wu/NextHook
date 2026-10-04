@@ -26,13 +26,15 @@ Choose **体验影视创作者样例** to explore without an API key. The sample
 - Per-post median, effective counts, missingness and optional exclusion of one maximum per group.
 - Inspectable content records and editable series labels.
 - Rule-generated next-experiment suggestions, saved plan and Markdown review export.
-- **带着数据自由追问**: transfer the actual table into the reused Data Formulator workbench at `/app`, with a prepared creator-specific question.
+- **进入可视化探索**: open NextHook's own `/explore` page with series comparisons, individual-post distributions and paired-metric scatter plots. The previous `/app` URL also opens this creator interface.
+- Click a chart mark to inspect the corresponding series or post, filter series, and save a finding with its evidence into the shared creation plan.
+- Ask follow-up questions about the current comparison without leaving NextHook. Model configuration is optional; deterministic exploration works without it.
 
 ### Model-backed analysis
 
-The creator review does not call a model. Open-ended questions in the workbench require configuring a supported model through the existing model settings. No credential is bundled. No live inference is claimed merely because the workbench loads. Upstream model configuration and backend behavior are documented in [the retained upstream README](docs/upstream-readme.md).
+The creator review does not call a model. The exploration page offers optional, comparison-scoped questions using the reused model-settings component and model client. Configure a supported model there to ask questions. No credential is bundled. No live inference is claimed merely because the interface loads. Model responses interpret the supplied evidence; they do not execute arbitrary analysis or change the chart. Upstream model configuration and backend behavior are documented in [the retained upstream README](docs/upstream-readme.md).
 
-Files are parsed in your browser for the creator review and stored in that browser. Entering the workbench sends the normalized table to the running backend; model analysis can send data to the selected model provider. Runtime server data is under the explicit `--data-dir` and ignored by Git. Clearing the creator review does not delete separate workbench sessions.
+Files are parsed and explored in your browser and stored there. Entering exploration does not upload the dataset. Sending an AI question sends the current comparison summaries, up to 50 plotted records, the selected record and the latest three conversation turns to the backend and selected model provider. The interface discloses this before sending. Runtime server data is under the explicit `--data-dir` and ignored by Git. Clearing the creator review does not remove server sessions created by earlier versions.
 
 See [verification results and the actual UI screenshot](docs/verification.md) for tested behavior and remaining limits.
 
@@ -62,4 +64,4 @@ The upstream frontend dev command is `corepack yarn start` (its default API prox
 
 The upstream MIT license and Microsoft copyright are retained. The exact imported revision is in [upstream.json](docs/upstream.json); original project documentation is in [upstream-readme.md](docs/upstream-readme.md). NextHook is an independent adaptation, not a Microsoft product.
 
-`src/nexthook/` contains creator-specific changes. The upstream React workbench and Python server remain in their original paths. Product and technical decisions live in [docs/design-decisions.md](docs/design-decisions.md). Tests include new creator checks alongside the retained upstream suites.
+`src/nexthook/` contains creator-specific changes. The upstream modules and Python server remain in their original paths. The visible exploration interface belongs to NextHook: chart compilation reuses `assembleVegaChart` and Flint/Vega, and scoped questions reuse the upstream model client and error protocol. Product and technical decisions live in [docs/design-decisions.md](docs/design-decisions.md). Tests include new creator checks alongside the retained upstream suites.

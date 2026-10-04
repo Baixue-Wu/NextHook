@@ -67,37 +67,6 @@ test("guide and mobile layout", async ({ page }) => {
   ).toBe(true);
   await page.screenshot({ path: "/tmp/nexthook-mobile.png", fullPage: true });
 });
-test("passes actual data into the upstream workbench", async ({ page }) => {
-  await page.goto("/");
-  await page.getByRole("button", { name: "体验影视创作者样例" }).click();
-  const response = page.waitForResponse(
-    (r) =>
-      r.url().includes("/api/") &&
-      r.request().method() === "POST" &&
-      r.url().includes("table")
-  );
-  await page.getByRole("button", { name: "带着数据自由追问" }).click();
-  const imported = await response;
-  expect(imported.ok()).toBe(true);
-  expect((await imported.json()).status).toBe("success");
-  await expect(page).toHaveURL(/\/app/);
-  await expect(
-    page.getByText("自由分析 · Data Formulator 工作台")
-  ).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "复制本次分析问题" })
-  ).toBeVisible();
-  await expect(page.getByText("正在加载自由分析工作台…")).toHaveCount(0);
-  await expect(page.getByText("18 rows", { exact: true })).toBeVisible();
-  await expect(page.locator("body")).toContainText("为什么这个镜头让人紧张");
-  await page.reload();
-  await expect(page.getByText("18 rows", { exact: true })).toBeVisible();
-  await expect(page.locator("body")).toContainText("为什么这个镜头让人紧张");
-  await page.screenshot({
-    path: "/tmp/nexthook-workbench.png",
-    fullPage: true,
-  });
-});
 
 test("Excel import uses upstream parser and preserves missing cells", async ({
   page,

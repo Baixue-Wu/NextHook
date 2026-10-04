@@ -15,7 +15,8 @@ Inputs are one account, one platform, and one declared measurement window per da
 3. Choose views, saves or new follows. Compare per-post medians and effective sample counts; optionally remove exactly one highest observation per series.
 4. Inspect the underlying content and edit series labels.
 5. Read a rule-generated next-experiment card, write a plan, and export the review.
-6. The current preview transfers the normalized table and measurement context into the upstream workbench. Following user review, this handoff is to be replaced with NextHook-owned visual exploration. The replacement is not yet implemented; see discussion-2026-10-04.md.
+6. Enter NextHook's own exploration page. Compare series, inspect post distributions, or compare views with saves/follows in a scatter plot. Filter series, exclude one maximum per series, and click chart marks to inspect source records.
+7. Append the current finding and its scope to the shared plan. Optional model questions interpret this comparison through NextHook's own question panel. Changing comparison context starts a fresh conversation. No original workbench handoff remains.
 
 The sample is synthetic, not evidence of real creator outcomes. Its outlier intentionally demonstrates why mean and median rankings can differ. No model call is needed for the initial review.
 

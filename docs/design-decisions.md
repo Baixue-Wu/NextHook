@@ -30,3 +30,12 @@ The user authorized autonomous implementation of routine decisions. Target-accou
 
 - All final NextHook presentation and project-authored material use Baixue's name. All new commits use Baixue Wu <baixuewu0@gmail.com> for both author and committer and are pushed with the existing `github-baixue` identity. Rationale: the user explicitly designated Baixue as this project's owner and author.
 - Retain third-party copyright, license and provenance for reused open-source code. Project authorship does not replace upstream attribution.
+
+## Implemented creator exploration
+
+- Replace the public workbench handoff with `/explore`, and map the previous `/app` entry to the same NextHook interface. Remove the obsolete handoff adapter and banner. Preserve upstream source, license and attribution.
+- Reuse `assembleVegaChart` and the existing Flint/Vega rendering stack for series bars, post distributions and paired-metric scatter plots. Creator controls, mark selection, record inspection and plan export are owned by NextHook.
+- Keep all deterministic exploration in the browser. Only an explicit AI question transmits the comparison context, up to 50 plotted records, the selected record and recent conversation to the model backend. No automatic model calls on page entry.
+- Add a bounded creator-question endpoint that reuses upstream identity, provider validation, model client and error handling. Responses explain the provided evidence; they do not run arbitrary data transformations or modify charts. Live provider quality remains unverified until credentials are available.
+- Preserve missingness and exclusion in evidence: scatter plots need both metrics, while per-series summaries use the chosen metric's valid values. Export these different sample bases and flag any selected record excluded from the chart.
+- Use the same browser plan across review and exploration, appending findings rather than replacing existing writing. Empty filter selections remain empty instead of silently restoring all content.

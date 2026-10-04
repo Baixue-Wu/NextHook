@@ -25,31 +25,7 @@ const fmt = (n: number | null) =>
   n === null
     ? "—"
     : new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 1 }).format(n);
-const DATA_KEY = "nexthook-dataset-v1";
-const PLAN_KEY = "nexthook-plan-v1";
-function restore(): Dataset | null {
-  try {
-    const d = JSON.parse(localStorage.getItem(DATA_KEY) || "null");
-    return d &&
-      Array.isArray(d.posts) &&
-      d.posts.length &&
-      d.posts.every(
-        (p: any) =>
-          typeof p.title === "string" &&
-          typeof p.series === "string" &&
-          ["views", "saves", "followers"].every(
-            (k) =>
-              p[k] === null ||
-              (typeof p[k] === "number" && Number.isFinite(p[k]) && p[k] >= 0)
-          )
-      ) &&
-      ["fixed_age", "calendar", "snapshot"].includes(d.basis)
-      ? d
-      : null;
-  } catch {
-    return null;
-  }
-}
+import { DATA_KEY, PLAN_KEY, restore } from "./storage";
 function download(
   text: string,
   name: string,
@@ -152,25 +128,13 @@ export function NextHook() {
       setError(e instanceof Error ? e.message : String(e));
     }
   }
-  async function advanced() {
+  function advanced() {
     if (!data) return;
-    setBusy(true);
-    setError("");
     try {
-      const { openWorkbench } = await import("./bridge");
-      await openWorkbench(data, goal);
-    } catch (e) {
-      setError(
-        `未能进入自由分析：${
-          e instanceof Error
-            ? e.message
-            : typeof e === "object" && e !== null && "message" in e
-            ? String(e.message)
-            : String(e)
-        }。请确认本地分析服务正在运行；当前复盘数据仍保留。`
-      );
-    } finally {
-      setBusy(false);
+      localStorage.setItem(DATA_KEY, JSON.stringify(data));
+      window.location.assign(`/explore?goal=${goal}`);
+    } catch {
+      setError("浏览器未能保存当前数据，请释放存储空间后再进入探索。");
     }
   }
   return (
@@ -310,7 +274,7 @@ export function NextHook() {
                   disabled={busy}
                   onClick={advanced}
                 >
-                  {busy ? "正在准备…" : "带着数据自由追问 ↗"}
+                  {busy ? "正在准备…" : "进入可视化探索 ↗"}
                 </button>
               </div>
             </section>
@@ -539,7 +503,7 @@ export function NextHook() {
                 setData(null);
                 setPlan("");
                 setMessage(
-                  "当前浏览器中的创作者复盘和计划已清除。自由分析工作台的数据需在工作台另行删除。"
+                  "当前浏览器中的创作者复盘和计划已清除；历史版本保存在服务器的会话不受影响。"
                 );
               }}
             >
@@ -622,7 +586,8 @@ export function NextHook() {
             <h2 id="import-title">确认这份数据在说什么</h2>
             <p>
               {tables[sheet].name} · {tables[sheet].rows.length}{" "}
-              行。原始文件只在浏览器读取；进入自由分析后，整理的数据会发送到当前分析服务器，使用模型时会再发送给所选服务。
+              行。原始文件只在浏览器读取。只有发送 AI
+              追问时，当前比较及记录预览才会发送到分析服务器和所选模型。
             </p>
             {error && (
               <div role="alert" className="nh-alert">
