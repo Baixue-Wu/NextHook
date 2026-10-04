@@ -1,0 +1,7 @@
+{
+  "repository": "https://github.com/microsoft/data-formulator",
+  "commit": "5477f0e236426dc8f74a498ec400414fba7fbc0f",
+  "license": "MIT",
+  "imported_on": "2026-10-04",
+  "strategy": "Adapt the upstream workbench in place; creator-specific modules live in src/nexthook."
+}
