@@ -19,3 +19,13 @@ These controls and layout are a design proposal, not yet implemented or validate
 ## Implementation outcome
 
 The proposed creator-owned exploration is now implemented: series bars, post distributions and paired-metric scatter plots; chart-to-record selection; series filtering; maximum exclusion; plan export; and optional questions about the current evidence. The original handoff adapter and banner were removed. Both `/explore` and the old `/app` URL enter NextHook. This is a bounded first exploration interface; it does not yet let arbitrary natural-language requests generate new chart types or run new transformations.
+
+## Conversational visualization gap
+
+The user observes that exploration still seems to lack a visual chat interaction and asks whether this is a misunderstanding. Inspection confirms that the current question endpoint returns text only, and the frontend only appends that text to conversation history. Charts are controlled by predefined questions and manual filters. No conversational chart generation or modification has been implemented.
+
+The assistant's earlier interpretation narrowed exploration too far: replacing the general-purpose interface with a creator dashboard plus text explanations does not preserve Data Formulator's conversation-driven exploration capability. The proposed correction is to reuse the upstream multi-turn analysis and chart-generation path inside a NextHook-owned conversation/canvas interface.
+
+Proposed representative flow: the creator asks to compare series by saves; the system creates the comparison with its measurement scope; the creator asks to remove each series' highest result; the system updates the chart while retaining the previous result; clicking a post provides context for a follow-up question. Messages should carry visible chart results, evidence and changes in analysis scope. Chat and direct manipulation should share state rather than operate as disconnected controls.
+
+This records the gap and proposed interaction, not completed functionality. Live model verification remains necessary. The current text-only endpoint should not be described as conversational visualization.
