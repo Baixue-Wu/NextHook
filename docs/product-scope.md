@@ -16,7 +16,8 @@ Inputs are one account, one platform, and one declared measurement window per da
 4. Inspect the underlying content and edit series labels.
 5. Read a rule-generated next-experiment card, write a plan, and export the review.
 6. Enter NextHook's own exploration page. Compare series, inspect post distributions, or compare views with saves/follows in a scatter plot. Filter series, exclude one maximum per series, and click chart marks to inspect source records.
-7. Append the current finding and its scope to the shared plan. Optional model questions interpret this comparison through NextHook's own question panel. Changing comparison context starts a fresh conversation. No original workbench handoff remains.
+7. Use the conversation and canvas to request a new chart or change a comparison. Select result marks for follow-ups, answer clarification questions, compare earlier results, and inspect computed rows and transformation code. Conversation history persists per dataset.
+8. Append a finding, question, selection, computation and scope to the shared plan. Manual controls remain under an expandable section. No original workbench handoff remains.
 
 The sample is synthetic, not evidence of real creator outcomes. Its outlier intentionally demonstrates why mean and median rankings can differ. No model call is needed for the initial review.
 

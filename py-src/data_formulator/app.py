@@ -266,8 +266,6 @@ def _register_blueprints():
     # Register blueprints
     app.register_blueprint(tables_bp)
     app.register_blueprint(agent_bp)
-    from data_formulator.routes.nexthook import nexthook_bp
-    app.register_blueprint(nexthook_bp)
     app.register_blueprint(session_bp)
     app.register_blueprint(demo_stream_bp)
     app.register_blueprint(logs_bp)

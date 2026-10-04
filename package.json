@@ -92,7 +92,7 @@
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=8192 ROLLUP_NATIVE=0 vite build",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:creator": "vitest run tests/frontend/nexthook.test.ts",
+    "test:creator": "vitest run tests/frontend/nexthook.test.ts tests/frontend/exploration.test.ts tests/frontend/conversation.test.ts",
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test"
   },

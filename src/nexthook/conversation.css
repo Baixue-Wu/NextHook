@@ -1,0 +1,295 @@
+.nx .nc {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  margin-bottom: 28px;
+  align-items: start;
+}
+.nx .nc-chat {
+  background: #f2f4ec;
+  padding: 22px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--line);
+}
+.nx .nc-chat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.nx .nc h2 {
+  font-size: 21px;
+  margin: 7px 0 12px;
+}
+.nx .nc h3 {
+  font-size: 16px;
+}
+.nx .nc-messages {
+  max-height: 540px;
+  min-height: 200px;
+  overflow: auto;
+  padding: 10px 0;
+}
+.nx .nc-welcome p {
+  color: var(--muted);
+  font-size: 13px;
+}
+.nx .nc-welcome button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  margin: 9px 0;
+  color: var(--ink);
+  font-size: 12px;
+}
+.nx .nc-user {
+  background: #193d33;
+  color: white;
+  border-radius: 9px;
+  padding: 13px;
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+.nx .nc-user span {
+  display: block;
+  color: #c3d3bc;
+  font-size: 10px;
+  margin-bottom: 6px;
+}
+.nx .nc-answer {
+  white-space: pre-wrap;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.nx .nc-turn {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 12px;
+}
+.nx .nc-result-card {
+  width: 100%;
+  text-align: left;
+  border: 1px solid #c5d2bd;
+  background: white;
+  padding: 12px;
+  border-radius: 7px;
+  color: var(--ink);
+  margin: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.nx .nc-result-card.active {
+  box-shadow: inset 3px 0 #487b61;
+}
+.nx .nc-result-card span,
+.nx .nc-result-card small {
+  font-size: 11px;
+  color: var(--muted);
+}
+.nx .nc-composer {
+  padding-top: 16px;
+}
+.nx .nc-composer label {
+  font-size: 12px;
+}
+.nx .nc-composer textarea {
+  min-height: 105px;
+  width: 100%;
+  resize: vertical;
+  font: inherit;
+  font-size: 13px;
+  border: 1px solid #cad2c4;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 8px 0;
+  background: white;
+  color: var(--ink);
+}
+.nx .nc-composer > div {
+  display: flex;
+  gap: 8px;
+}
+.nx .nc-selection {
+  font-size: 11px;
+  color: var(--ink);
+  align-items: center;
+}
+.nx .nc-selection button {
+  font-size: 11px;
+}
+.nx .nc-session {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 15px;
+}
+.nx .nc-session button {
+  font-size: 11px;
+}
+.nx .nc-canvas {
+  min-width: 0;
+  padding: 28px;
+}
+.nx .nc-canvas-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.nx .nc-results-nav {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.nx .nc-results-nav button {
+  border: 1px solid var(--line);
+  padding: 6px 10px;
+  border-radius: 5px;
+  background: white;
+  font-size: 11px;
+  color: var(--ink);
+}
+.nx .nc-results-nav button[aria-pressed="true"] {
+  background: #e8eee0;
+  border-color: #9aad8b;
+}
+.nx .nc-generated {
+  width: 100%;
+  min-height: 360px;
+  overflow: auto;
+}
+.nx .nc-generated .vega-embed {
+  padding: 0;
+}
+.nx .nc-generated .role-mark {
+  cursor: pointer;
+}
+.nx .nc-canvas-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.nx .nc-canvas-actions label {
+  font-size: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.nx .nc-canvas-actions select {
+  max-width: 240px;
+}
+.nx .nc-result-data {
+  font-size: 12px;
+  border-top: 1px solid var(--line);
+  padding-top: 15px;
+}
+.nx .nc-result-data table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 15px 0;
+}
+.nx .nc-result-data td,
+.nx .nc-result-data th {
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  white-space: nowrap;
+}
+.nx .nc-result-data button {
+  font-size: 12px;
+  background: transparent;
+  border: 0;
+  text-decoration: underline;
+  color: var(--ink);
+}
+.nx .nc-result-data pre {
+  max-height: 200px;
+  overflow: auto;
+  background: #f5f6ef;
+  padding: 12px;
+  font-size: 11px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.nx .nc-pagination {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-bottom: 14px;
+  align-items: center;
+  font-size: 11px;
+}
+.nx .nc-row {
+  background: #eef2e6;
+  padding: 15px;
+  border-radius: 6px;
+  margin: 12px 0;
+  font-size: 12px;
+}
+.nx .nc-row dl {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 6px;
+}
+.nx .nc-row dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.nx .nc-comparison {
+  border: 1px solid var(--line);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.nx .nc-clarify {
+  padding: 12px;
+  border: 1px solid #c5d2bd;
+  font-size: 12px;
+}
+.nx .nc-clarify button {
+  padding: 6px;
+  margin: 3px;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+.nx .nx-manual > summary {
+  font-weight: 600;
+  cursor: pointer;
+  padding: 16px 0;
+  margin-bottom: 14px;
+}
+.nx summary {
+  cursor: pointer;
+}
+@media (max-width: 900px) {
+  .nx .nc {
+    grid-template-columns: 1fr;
+  }
+  .nx .nc-chat {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .nx .nc-messages {
+    max-height: 400px;
+  }
+  .nx .nc-canvas {
+    padding: 20px 14px;
+  }
+  .nx .nc-chat {
+    padding: 20px 16px;
+  }
+}

@@ -6,7 +6,7 @@ NextHook adapts Microsoft Data Formulator for individual content creators. The i
 
 - Start with user-supplied files and a clearly labeled synthetic demo. Do not scrape platforms or promise native export compatibility without a tested sample.
 - Keep observation windows, account boundaries, metric definitions, missing values, and original evidence visible. No causal claims, guaranteed viral content, or numerical forecasts without a defined and validated method.
-- The deterministic review works without model credentials. Creator questions use the upstream model client, identity checks and error protocol through the NextHook endpoint, with a user-configured model. Never simulate a model response as if it were live.
+- The deterministic review works without model credentials. Conversational visualization uses the upstream AnalystAgent streaming endpoint, Python sandbox and workspace storage with a user-configured model. The first send uploads the full normalized dataset; disclose this before sending. Never simulate a model response as if it were live.
 - Personal job-planning notes live outside this code repository, in the existing local Chinese discussion folder. Do not copy personal background or research data into this repository.
 
 ## Layout

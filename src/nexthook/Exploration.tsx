@@ -18,8 +18,10 @@ import {
 import { ExplorationChart } from "./ExplorationChart";
 import "./nexthook.css";
 import "./exploration.css";
-const CreatorQuestion = lazy(() =>
-  import("./CreatorQuestion").then((m) => ({ default: m.CreatorQuestion }))
+const VisualConversation = lazy(() =>
+  import("./VisualConversation").then((m) => ({
+    default: m.VisualConversation,
+  }))
 );
 const fmt = (n: number | null) =>
   n === null
@@ -48,7 +50,6 @@ export function Exploration() {
   const [selectedId, setSelectedId] = useState("");
   const [inspectSeries, setInspectSeries] = useState("");
   const [page, setPage] = useState(0);
-  const [showAi, setShowAi] = useState(false);
   const [plan, setPlan] = useState(readPlan);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
@@ -205,130 +206,12 @@ export function Exploration() {
               <span>{data.window}</span>
             </div>
           </section>
-          <div className="nx-layout">
-            <aside className="nx-questions">
-              <p className="nh-eyebrow">你想弄清什么？</p>
-              {(
-                Object.entries(QUESTIONS) as [
-                  Question,
-                  (typeof QUESTIONS)[Question]
-                ][]
-              ).map(([key, q], i) => (
-                <button
-                  key={key}
-                  className={`nx-question ${question === key ? "active" : ""}`}
-                  aria-pressed={question === key}
-                  disabled={
-                    key === "relationship" &&
-                    !data.posts.some(
-                      (p) => p.saves !== null || p.followers !== null
-                    )
-                  }
-                  onClick={() => chooseQuestion(key)}
-                >
-                  <span>0{i + 1}</span>
-                  <strong>{q.title}</strong>
-                  <small>{q.hint}</small>
-                </button>
-              ))}
-              {!data.posts.some(
-                (p) => p.saves !== null || p.followers !== null
-              ) && (
-                <p className="nh-small">
-                  补充收藏或内容新增关注后，即可探索它们与观看的关系。
-                </p>
-              )}
-              <div className="nx-series">
-                <h3>纳入哪些系列？</h3>
-                <button
-                  className="nh-text-btn"
-                  onClick={() => {
-                    setExcludedSeries([]);
-                    clearSelection();
-                  }}
-                >
-                  选择全部
-                </button>
-                {allSeries.map((s) => (
-                  <label key={s}>
-                    <input
-                      type="checkbox"
-                      checked={!excludedSeries.includes(s)}
-                      onChange={() => {
-                        setExcludedSeries((prev) =>
-                          prev.includes(s)
-                            ? prev.filter((v) => v !== s)
-                            : [...prev, s]
-                        );
-                        clearSelection();
-                      }}
-                    />
-                    {s}
-                  </label>
-                ))}
-              </div>
-            </aside>
-            <div className="nx-center">
-              <section className="nh-panel nx-visual">
-                <div className="nh-panel-heading">
-                  <div>
-                    <p className="nh-eyebrow">01 / 探索表现</p>
-                    <h2>{QUESTIONS[question].title}</h2>
-                  </div>
-                  <span className="nh-tag">
-                    {question === "series" ? "系列中位数" : "每个点是一条内容"}
-                  </span>
-                </div>
-                <div className="nx-controls">
-                  <label>
-                    比较指标
-                    <select
-                      aria-label="探索指标"
-                      value={goal}
-                      onChange={(e) => {
-                        setGoal(e.target.value as Goal);
-                        clearSelection();
-                      }}
-                    >
-                      {(
-                        Object.entries(GOALS) as [Goal, (typeof GOALS)[Goal]][]
-                      ).map(([key, g]) => (
-                        <option
-                          key={key}
-                          value={key}
-                          disabled={
-                            (question === "relationship" && key === "views") ||
-                            !data.posts.some((p) => p[key] !== null)
-                          }
-                        >
-                          {g.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={removeTop}
-                      onChange={(e) => {
-                        setRemoveTop(e.target.checked);
-                        clearSelection();
-                      }}
-                    />
-                    去掉每个系列的一个最高值
-                  </label>
-                </div>
-                <p className="nh-small">
-                  按{GOALS[goal].label}排除最高值。{result!.rows.length}{" "}
-                  条内容进入图表，{result!.omitted}{" "}
-                  条因缺失或排除未进入；原始记录保留在下方。
-                </p>
-                {data.basis !== "fixed_age" && (
-                  <p className="nh-caution">
-                    当前积累时长可能不同，图表仅描述这份记录，不据此推荐领先系列。
-                  </p>
-                )}
-                {result!.rows.length ? (
+          <Suspense fallback={<p>正在准备对话探索…</p>}>
+            <VisualConversation
+              data={data}
+              context={context!}
+              baseline={
+                result!.rows.length ? (
                   <ExplorationChart
                     question={question}
                     goal={goal}
@@ -342,191 +225,326 @@ export function Exploration() {
                     }}
                   />
                 ) : (
-                  <div className="nx-no-data">
-                    当前没有可绘制的记录。请选中系列、补充指标，或取消最高值排除。
-                  </div>
-                )}
-                {question === "relationship" && (
+                  <p>当前筛选没有可绘制记录，请调整下方手动比较条件。</p>
+                )
+              }
+              onSave={(note) => {
+                if (savePlan([plan, note].filter(Boolean).join("\n\n---\n\n")))
+                  setNotice("已将对话图表与计算依据加入计划。");
+              }}
+            />
+          </Suspense>
+          <details className="nx-manual">
+            <summary>手动调整比较、查看原始记录与创作计划</summary>
+            <div className="nx-layout">
+              <aside className="nx-questions">
+                <p className="nh-eyebrow">你想弄清什么？</p>
+                {(
+                  Object.entries(QUESTIONS) as [
+                    Question,
+                    (typeof QUESTIONS)[Question]
+                  ][]
+                ).map(([key, q], i) => (
+                  <button
+                    key={key}
+                    className={`nx-question ${
+                      question === key ? "active" : ""
+                    }`}
+                    aria-pressed={question === key}
+                    disabled={
+                      key === "relationship" &&
+                      !data.posts.some(
+                        (p) => p.saves !== null || p.followers !== null
+                      )
+                    }
+                    onClick={() => chooseQuestion(key)}
+                  >
+                    <span>0{i + 1}</span>
+                    <strong>{q.title}</strong>
+                    <small>{q.hint}</small>
+                  </button>
+                ))}
+                {!data.posts.some(
+                  (p) => p.saves !== null || p.followers !== null
+                ) && (
                   <p className="nh-small">
-                    纵轴是次数，不是转化率。系列中位数使用该指标的全部有效记录，散点要求两个指标均有效；共同变化不能证明因果。
+                    补充收藏或内容新增关注后，即可探索它们与观看的关系。
                   </p>
                 )}
-              </section>
-              <section className="nh-panel nx-evidence">
-                <div className="nh-panel-heading">
-                  <div>
-                    <p className="nh-eyebrow">02 / 核对内容</p>
-                    <h2>
-                      {inspectSeries
-                        ? `${inspectSeries}的记录`
-                        : "图表背后的每条内容"}
-                    </h2>
+                <div className="nx-series">
+                  <h3>纳入哪些系列？</h3>
+                  <button
+                    className="nh-text-btn"
+                    onClick={() => {
+                      setExcludedSeries([]);
+                      clearSelection();
+                    }}
+                  >
+                    选择全部
+                  </button>
+                  {allSeries.map((s) => (
+                    <label key={s}>
+                      <input
+                        type="checkbox"
+                        checked={!excludedSeries.includes(s)}
+                        onChange={() => {
+                          setExcludedSeries((prev) =>
+                            prev.includes(s)
+                              ? prev.filter((v) => v !== s)
+                              : [...prev, s]
+                          );
+                          clearSelection();
+                        }}
+                      />
+                      {s}
+                    </label>
+                  ))}
+                </div>
+              </aside>
+              <div className="nx-center">
+                <section className="nh-panel nx-visual">
+                  <div className="nh-panel-heading">
+                    <div>
+                      <p className="nh-eyebrow">01 / 探索表现</p>
+                      <h2>{QUESTIONS[question].title}</h2>
+                    </div>
+                    <span className="nh-tag">
+                      {question === "series"
+                        ? "系列中位数"
+                        : "每个点是一条内容"}
+                    </span>
                   </div>
-                  {inspectSeries && (
-                    <button className="nh-text-btn" onClick={clearSelection}>
-                      查看全部记录
-                    </button>
+                  <div className="nx-controls">
+                    <label>
+                      比较指标
+                      <select
+                        aria-label="探索指标"
+                        value={goal}
+                        onChange={(e) => {
+                          setGoal(e.target.value as Goal);
+                          clearSelection();
+                        }}
+                      >
+                        {(
+                          Object.entries(GOALS) as [
+                            Goal,
+                            (typeof GOALS)[Goal]
+                          ][]
+                        ).map(([key, g]) => (
+                          <option
+                            key={key}
+                            value={key}
+                            disabled={
+                              (question === "relationship" &&
+                                key === "views") ||
+                              !data.posts.some((p) => p[key] !== null)
+                            }
+                          >
+                            {g.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={removeTop}
+                        onChange={(e) => {
+                          setRemoveTop(e.target.checked);
+                          clearSelection();
+                        }}
+                      />
+                      去掉每个系列的一个最高值
+                    </label>
+                  </div>
+                  <p className="nh-small">
+                    按{GOALS[goal].label}排除最高值。{result!.rows.length}{" "}
+                    条内容进入图表，{result!.omitted}{" "}
+                    条因缺失或排除未进入；原始记录保留在下方。
+                  </p>
+                  {data.basis !== "fixed_age" && (
+                    <p className="nh-caution">
+                      当前积累时长可能不同，图表仅描述这份记录，不据此推荐领先系列。
+                    </p>
                   )}
-                </div>
-                <div className="nh-table-wrap">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>内容</th>
-                        <th>系列</th>
-                        <th>{GOALS[goal].label}</th>
-                        <th>图中状态</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {shown.map((p) => (
-                        <tr
-                          key={p.id}
-                          className={selectedId === p.id ? "nx-selected" : ""}
-                        >
-                          <td>
-                            <button
-                              className="nx-record"
-                              aria-pressed={selectedId === p.id}
-                              onClick={() => setSelectedId(p.id)}
-                            >
-                              {p.title}
-                            </button>
-                          </td>
-                          <td>{p.series}</td>
-                          <td>{fmt(p[goal])}</td>
-                          <td>
-                            {included.has(p.id)
-                              ? "已纳入"
-                              : p[goal] === null ||
-                                (question === "relationship" &&
-                                  p.views === null)
-                              ? "指标缺失"
-                              : "本轮排除"}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                {!evidence.length && <p>尚未选择系列。</p>}
-                <div className="nx-pagination">
-                  <span>
-                    共 {evidence.length} 条 · 第 {page + 1} /{" "}
-                    {Math.max(1, Math.ceil(evidence.length / 10))} 页
-                  </span>
-                  <button
-                    disabled={page === 0}
-                    onClick={() => setPage((p) => p - 1)}
-                  >
-                    上一页
-                  </button>
-                  <button
-                    disabled={(page + 1) * 10 >= evidence.length}
-                    onClick={() => setPage((p) => p + 1)}
-                  >
-                    下一页
-                  </button>
-                </div>
-              </section>
-              <section className="nh-panel">
-                <div className="nh-panel-heading">
-                  <div>
-                    <p className="nh-eyebrow">继续探究</p>
-                    <h2>还有想问的？</h2>
+                  {result!.rows.length ? (
+                    <ExplorationChart
+                      question={question}
+                      goal={goal}
+                      rows={result!.rows}
+                      groups={result!.groups}
+                      seriesDomain={allSeries}
+                      onSelect={(id, series) => {
+                        setSelectedId(id);
+                        setInspectSeries(series);
+                        setPage(0);
+                      }}
+                    />
+                  ) : (
+                    <div className="nx-no-data">
+                      当前没有可绘制的记录。请选中系列、补充指标，或取消最高值排除。
+                    </div>
+                  )}
+                  {question === "relationship" && (
+                    <p className="nh-small">
+                      纵轴是次数，不是转化率。系列中位数使用该指标的全部有效记录，散点要求两个指标均有效；共同变化不能证明因果。
+                    </p>
+                  )}
+                </section>
+                <section className="nh-panel nx-evidence">
+                  <div className="nh-panel-heading">
+                    <div>
+                      <p className="nh-eyebrow">02 / 核对内容</p>
+                      <h2>
+                        {inspectSeries
+                          ? `${inspectSeries}的记录`
+                          : "图表背后的每条内容"}
+                      </h2>
+                    </div>
+                    {inspectSeries && (
+                      <button className="nh-text-btn" onClick={clearSelection}>
+                        查看全部记录
+                      </button>
+                    )}
                   </div>
+                  <div className="nh-table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>内容</th>
+                          <th>系列</th>
+                          <th>{GOALS[goal].label}</th>
+                          <th>图中状态</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {shown.map((p) => (
+                          <tr
+                            key={p.id}
+                            className={selectedId === p.id ? "nx-selected" : ""}
+                          >
+                            <td>
+                              <button
+                                className="nx-record"
+                                aria-pressed={selectedId === p.id}
+                                onClick={() => setSelectedId(p.id)}
+                              >
+                                {p.title}
+                              </button>
+                            </td>
+                            <td>{p.series}</td>
+                            <td>{fmt(p[goal])}</td>
+                            <td>
+                              {included.has(p.id)
+                                ? "已纳入"
+                                : p[goal] === null ||
+                                  (question === "relationship" &&
+                                    p.views === null)
+                                ? "指标缺失"
+                                : "本轮排除"}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  {!evidence.length && <p>尚未选择系列。</p>}
+                  <div className="nx-pagination">
+                    <span>
+                      共 {evidence.length} 条 · 第 {page + 1} /{" "}
+                      {Math.max(1, Math.ceil(evidence.length / 10))} 页
+                    </span>
+                    <button
+                      disabled={page === 0}
+                      onClick={() => setPage((p) => p - 1)}
+                    >
+                      上一页
+                    </button>
+                    <button
+                      disabled={(page + 1) * 10 >= evidence.length}
+                      onClick={() => setPage((p) => p + 1)}
+                    >
+                      下一页
+                    </button>
+                  </div>
+                </section>
+              </div>
+              <aside className="nx-notebook">
+                <section className="nh-panel nx-selection">
+                  <p className="nh-eyebrow">03 / 把发现带走</p>
+                  <h2>{selected ? "这条内容的依据" : "当前比较告诉了什么"}</h2>
+                  {selected ? (
+                    <>
+                      <h3>{selected.title}</h3>
+                      <p>
+                        {selected.series} ·{" "}
+                        {selected.published || "发布时间未提供"}
+                      </p>
+                      <dl>
+                        {(
+                          Object.entries(GOALS) as [
+                            Goal,
+                            (typeof GOALS)[Goal]
+                          ][]
+                        ).map(([key, g]) => (
+                          <React.Fragment key={key}>
+                            <dt>{g.label}</dt>
+                            <dd>{fmt(selected[key])}</dd>
+                          </React.Fragment>
+                        ))}
+                      </dl>
+                      <p className="nh-small">
+                        {included.has(selected.id)
+                          ? "当前图表已纳入这条内容。"
+                          : "这条原始记录未纳入当前图表，保存时会注明。"}
+                      </p>
+                      <button
+                        className="nh-text-btn"
+                        onClick={() => setSelectedId("")}
+                      >
+                        回到比较概览
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <h3>{advice!.title}</h3>
+                      <p>{advice!.evidence}</p>
+                      <p className="nh-small">{advice!.caveat}</p>
+                    </>
+                  )}
+                  <button
+                    className="nh-primary"
+                    disabled={!result!.rows.length}
+                    onClick={pinFinding}
+                  >
+                    把当前发现加入计划 ↓
+                  </button>
+                  <p className="nh-small">
+                    一起保存指标、系列、排除条件、窗口与记录。已有计划会保留。
+                  </p>
+                </section>
+                <section className="nh-panel nx-plan">
+                  <label htmlFor="exploration-plan">
+                    <h3>下一次创作计划</h3>
+                  </label>
+                  <textarea
+                    id="exploration-plan"
+                    value={plan}
+                    onChange={(e) => savePlan(e.target.value)}
+                    placeholder="写下要尝试的变化，以及何时回来验证。"
+                  />
+                  <p className="nh-small">保存在当前浏览器，与复盘页共用。</p>
                   <button
                     className="nh-secondary"
-                    onClick={() => setShowAi((s) => !s)}
+                    disabled={!plan}
+                    onClick={downloadPlan}
                   >
-                    {showAi ? "收起追问" : "打开 AI 追问"}
+                    下载计划
                   </button>
-                </div>
-                <p className="nh-muted">
-                  围绕当前比较和内容记录，讨论可能的解释与验证方式。
-                </p>
-                {showAi && context && (
-                  <Suspense fallback={<p>正在准备追问…</p>}>
-                    <CreatorQuestion
-                      key={JSON.stringify(context)}
-                      context={context}
-                    />
-                  </Suspense>
-                )}
-              </section>
+                </section>
+              </aside>
             </div>
-            <aside className="nx-notebook">
-              <section className="nh-panel nx-selection">
-                <p className="nh-eyebrow">03 / 把发现带走</p>
-                <h2>{selected ? "这条内容的依据" : "当前比较告诉了什么"}</h2>
-                {selected ? (
-                  <>
-                    <h3>{selected.title}</h3>
-                    <p>
-                      {selected.series} ·{" "}
-                      {selected.published || "发布时间未提供"}
-                    </p>
-                    <dl>
-                      {(
-                        Object.entries(GOALS) as [Goal, (typeof GOALS)[Goal]][]
-                      ).map(([key, g]) => (
-                        <React.Fragment key={key}>
-                          <dt>{g.label}</dt>
-                          <dd>{fmt(selected[key])}</dd>
-                        </React.Fragment>
-                      ))}
-                    </dl>
-                    <p className="nh-small">
-                      {included.has(selected.id)
-                        ? "当前图表已纳入这条内容。"
-                        : "这条原始记录未纳入当前图表，保存时会注明。"}
-                    </p>
-                    <button
-                      className="nh-text-btn"
-                      onClick={() => setSelectedId("")}
-                    >
-                      回到比较概览
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <h3>{advice!.title}</h3>
-                    <p>{advice!.evidence}</p>
-                    <p className="nh-small">{advice!.caveat}</p>
-                  </>
-                )}
-                <button
-                  className="nh-primary"
-                  disabled={!result!.rows.length}
-                  onClick={pinFinding}
-                >
-                  把当前发现加入计划 ↓
-                </button>
-                <p className="nh-small">
-                  一起保存指标、系列、排除条件、窗口与记录。已有计划会保留。
-                </p>
-              </section>
-              <section className="nh-panel nx-plan">
-                <label htmlFor="exploration-plan">
-                  <h3>下一次创作计划</h3>
-                </label>
-                <textarea
-                  id="exploration-plan"
-                  value={plan}
-                  onChange={(e) => savePlan(e.target.value)}
-                  placeholder="写下要尝试的变化，以及何时回来验证。"
-                />
-                <p className="nh-small">保存在当前浏览器，与复盘页共用。</p>
-                <button
-                  className="nh-secondary"
-                  disabled={!plan}
-                  onClick={downloadPlan}
-                >
-                  下载计划
-                </button>
-              </section>
-            </aside>
-          </div>
+          </details>
           {notice && (
             <p role="status" className="nh-message">
               {notice}

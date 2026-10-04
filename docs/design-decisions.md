@@ -39,3 +39,11 @@ The user authorized autonomous implementation of routine decisions. Target-accou
 - Add a bounded creator-question endpoint that reuses upstream identity, provider validation, model client and error handling. Responses explain the provided evidence; they do not run arbitrary data transformations or modify charts. Live provider quality remains unverified until credentials are available.
 - Preserve missingness and exclusion in evidence: scatter plots need both metrics, while per-series summaries use the chosen metric's valid values. Export these different sample bases and flag any selected record excluded from the chart.
 - Use the same browser plan across review and exploration, appending findings rather than replacing existing writing. Empty filter selections remain empty instead of silently restoring all content.
+
+## Conversational visualization (2026-10-04)
+
+- Make a persistent chat and visual canvas the main exploration interaction. User approval supersedes the text-only question endpoint; remove that obsolete path. Rationale: creator exploration must allow new calculations and charts, not just commentary on fixed plots.
+- Reuse the upstream AnalystAgent streaming protocol, workspace upload/storage, Python execution and chart compilation. Keep NextHook responsible for the creator interface and context, avoiding a duplicate agent engine.
+- Upload the complete normalized table only after the first explicit model question and disclose provider access. Reuse that workspace for subsequent turns; key browser history by the full dataset hash to avoid mixing edited datasets.
+- Preserve prior chart results, carry selected chart/data into follow-ups, support upstream clarification trajectories, and export actual transformation code with findings. This makes changed comparisons inspectable and keeps evidence attached to plans.
+- Keep deterministic manual exploration usable without credentials. Protocol fixtures and real sandbox computation are separate checks; do not describe fixture responses as live model verification.

@@ -29,3 +29,5 @@ The assistant's earlier interpretation narrowed exploration too far: replacing t
 Proposed representative flow: the creator asks to compare series by saves; the system creates the comparison with its measurement scope; the creator asks to remove each series' highest result; the system updates the chart while retaining the previous result; clicking a post provides context for a follow-up question. Messages should carry visible chart results, evidence and changes in analysis scope. Chat and direct manipulation should share state rather than operate as disconnected controls.
 
 This records the gap and proposed interaction, not completed functionality. Live model verification remains necessary. The current text-only endpoint should not be described as conversational visualization.
+
+The user approved proceeding with the conversation/canvas correction. The implementation now uses the upstream analyst stream; accepted boundaries and reuse choices are recorded in design-decisions.md. Live provider behavior remains pending configuration.

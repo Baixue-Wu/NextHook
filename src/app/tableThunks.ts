@@ -31,6 +31,8 @@ async function compressBlob(data: string): Promise<Blob> {
 export interface LoadTablePayload {
     // The table data (already parsed into rows/names/metadata on the frontend)
     table: DictTable;
+    // Creator schemas are already known; callers can skip model-based inference.
+    inferSemanticTypes?: boolean;
     
     // For file uploads to server: the raw File object
     file?: File;
@@ -239,7 +241,7 @@ export const loadTable = createAsyncThunk<
 
         // Dispatch the table into Redux state
         dispatch(dfActions.addTableToStore(finalTable));
-        dispatch(fetchFieldSemanticType(finalTable));
+        if (payload.inferSemanticTypes !== false) dispatch(fetchFieldSemanticType(finalTable));
         // Workspace-stored tables get backend-computed column stats
         // (distinct/null counts + low-card value lists) for the grid
         // filter popover. Browser-only tables skip this in v1.
