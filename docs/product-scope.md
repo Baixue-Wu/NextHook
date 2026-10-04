@@ -15,7 +15,7 @@ Inputs are one account, one platform, and one declared measurement window per da
 3. Choose views, saves or new follows. Compare per-post medians and effective sample counts; optionally remove exactly one highest observation per series.
 4. Inspect the underlying content and edit series labels.
 5. Read a rule-generated next-experiment card, write a plan, and export the review.
-6. Transfer the normalized table and measurement context into Data Formulator for model-backed exploration. The user configures the model in the workbench and can copy the prepared question.
+6. The current preview transfers the normalized table and measurement context into the upstream workbench. Following user review, this handoff is to be replaced with NextHook-owned visual exploration. The replacement is not yet implemented; see discussion-2026-10-04.md.
 
 The sample is synthetic, not evidence of real creator outcomes. Its outlier intentionally demonstrates why mean and median rankings can differ. No model call is needed for the initial review.
 

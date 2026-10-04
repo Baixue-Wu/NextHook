@@ -19,3 +19,14 @@
 - Do not request upstream starter questions until a model is configured. A model-free review should not trigger a failing background inference request.
 
 The user authorized autonomous implementation of routine decisions. Target-account validation, real platform adapters, statistical forecasting, model choice/budget and public deployment remain open.
+
+## Creator-owned exploration interface
+
+- The user rejected exposing the original Data Formulator workbench as NextHook's exploration experience. Build a NextHook exploration interface around creator tasks, reusing the upstream analysis and visualization implementation behind explicit interfaces. Rationale: moving from the creator review into a generic tool breaks the task flow and leaves the scene-specific product adaptation incomplete. This supersedes the earlier decision to make `/app` the user-facing exploration destination.
+- Preserve the upstream license, copyright and provenance. Product-specific interface design does not remove attribution.
+- The currently running preview still contains the original workbench handoff. This decision records the next implementation direction, not a completed UI replacement.
+
+## Project authorship
+
+- All final NextHook presentation and project-authored material use Baixue's name. All new commits use Baixue Wu <baixuewu0@gmail.com> for both author and committer and are pushed with the existing `github-baixue` identity. Rationale: the user explicitly designated Baixue as this project's owner and author.
+- Retain third-party copyright, license and provenance for reused open-source code. Project authorship does not replace upstream attribution.
