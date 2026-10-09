@@ -67,3 +67,7 @@ The upstream frontend dev command is `corepack yarn start` (its default API prox
 The upstream MIT license and Microsoft copyright are retained. The exact imported revision is in [upstream.json](docs/upstream.json); original project documentation is in [upstream-readme.md](docs/upstream-readme.md). NextHook is an independent adaptation, not a Microsoft product.
 
 `src/nexthook/` contains creator-specific changes. The upstream modules and Python server remain in their original paths. The visible exploration interface belongs to NextHook: chart compilation reuses `assembleVegaChart` and Flint/Vega, and conversational analysis reuses the upstream AnalystAgent stream, workspace storage and Python execution path. Product and technical decisions live in [docs/design-decisions.md](docs/design-decisions.md). Tests include new creator checks alongside the retained upstream suites.
+
+## Public demo
+
+Run `npm run build:demo`, then serve `dist/demo/` as static files. The public build supports samples, CSV/TSV/XLSX import, review, manual chart exploration and export entirely in the browser. AI conversation and model setup are omitted. Query-string navigation supports GitHub Pages subpaths and refresh.

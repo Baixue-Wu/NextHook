@@ -8,6 +8,7 @@ import {
 } from "./analysis";
 import { DATA_KEY, PLAN_KEY, restore } from "./storage";
 import { demoDataset } from "./demo";
+import { publicDemo, reviewUrl } from "./runtime";
 import {
   QUESTIONS,
   explore,
@@ -18,7 +19,7 @@ import {
 import { ExplorationChart } from "./ExplorationChart";
 import "./nexthook.css";
 import "./exploration.css";
-const VisualConversation = lazy(() =>
+const VisualConversation = publicDemo ? () => null : lazy(() =>
   import("./VisualConversation").then((m) => ({
     default: m.VisualConversation,
   }))
@@ -153,14 +154,14 @@ export function Exploration() {
   return (
     <div className="nh nx">
       <header className="nh-nav">
-        <a href="/" className="nh-brand">
+        <a href={reviewUrl()} className="nh-brand">
           <span className="nh-mark">
             n<span>↗</span>
           </span>
           NextHook
         </a>
         <nav>
-          <a href="/">← 创作复盘</a>
+          <a href={reviewUrl()}>← 创作复盘</a>
           <span className="nh-alpha">内容探索</span>
         </nav>
       </header>
@@ -169,7 +170,7 @@ export function Exploration() {
           <p className="nh-eyebrow">START WITH YOUR CONTENT</p>
           <h1>先带一份内容记录来。</h1>
           <p>从复盘页导入表格，或直接探索影视创作者的模拟样例。</p>
-          <a className="nh-secondary" href="/">
+          <a className="nh-secondary" href={reviewUrl()}>
             去导入表格
           </a>
           <button
@@ -206,7 +207,7 @@ export function Exploration() {
               <span>{data.window}</span>
             </div>
           </section>
-          <Suspense fallback={<p>正在准备对话探索…</p>}>
+          {publicDemo ? <p className="nh-muted">公开演示版：体验系列比较、内容分布、指标关系和计划导出。数据保存在当前浏览器，AI 对话未开放。</p> : <Suspense fallback={<p>正在准备对话探索…</p>}>
             <VisualConversation
               data={data}
               context={context!}
@@ -233,8 +234,8 @@ export function Exploration() {
                   setNotice("已将对话图表与计算依据加入计划。");
               }}
             />
-          </Suspense>
-          <details className="nx-manual">
+          </Suspense>}
+          <details className="nx-manual" open={publicDemo || undefined}>
             <summary>手动调整比较、查看原始记录与创作计划</summary>
             <div className="nx-layout">
               <aside className="nx-questions">

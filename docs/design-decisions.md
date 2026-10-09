@@ -47,3 +47,5 @@ The user authorized autonomous implementation of routine decisions. Target-accou
 - Upload the complete normalized table only after the first explicit model question and disclose provider access. Reuse that workspace for subsequent turns; key browser history by the full dataset hash to avoid mixing edited datasets.
 - Preserve prior chart results, carry selected chart/data into follow-ups, support upstream clarification trajectories, and export actual transformation code with findings. This makes changed comparisons inspectable and keeps evidence attached to plans.
 - Keep deterministic manual exploration usable without credentials. Protocol fixtures and real sandbox computation are separate checks; do not describe fixture responses as live model verification.
+
+- The public portfolio demo runs review and manual exploration entirely in the browser. A separate build entry omits model setup and conversation, and query-string navigation works on GitHub Pages subpaths.

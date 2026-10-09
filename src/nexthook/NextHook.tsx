@@ -19,6 +19,7 @@ import {
   type Field,
 } from "./import";
 import { demoDataset } from "./demo";
+import { publicDemo, reviewUrl, explorationUrl } from "./runtime";
 import { platformGuides } from "./platforms";
 import "./nexthook.css";
 const fmt = (n: number | null) =>
@@ -132,7 +133,7 @@ export function NextHook() {
     if (!data) return;
     try {
       localStorage.setItem(DATA_KEY, JSON.stringify(data));
-      window.location.assign(`/explore?goal=${goal}`);
+      window.location.assign(explorationUrl(goal));
     } catch {
       setError("浏览器未能保存当前数据，请释放存储空间后再进入探索。");
     }
@@ -140,11 +141,11 @@ export function NextHook() {
   return (
     <div className="nh">
       <header className="nh-nav">
-        <a className="nh-brand" href="/">
+        <a className="nh-brand" href={reviewUrl()}>
           <span className="nh-mark">
             n<span>↗</span>
           </span>
-          NextHook<span className="nh-alpha">PREVIEW</span>
+          NextHook<span className="nh-alpha">{publicDemo ? "公开演示" : "PREVIEW"}</span>
         </a>
         <nav>
           <button className="nh-text-btn" onClick={() => setShowGuide(true)}>
@@ -160,6 +161,7 @@ export function NextHook() {
         </nav>
       </header>
       <main>
+        {publicDemo && <p className="nh-message">公开演示版 · 无需登录。体验样例复盘、手动图表探索与导出；数据只保存在当前浏览器，AI 对话未开放。</p>}
         <section className="nh-hero">
           <div>
             <p className="nh-eyebrow">FROM YOUR LAST POST TO YOUR NEXT MOVE</p>
@@ -586,8 +588,7 @@ export function NextHook() {
             <h2 id="import-title">确认这份数据在说什么</h2>
             <p>
               {tables[sheet].name} · {tables[sheet].rows.length}{" "}
-              行。原始文件只在浏览器读取。只有发送 AI
-              追问时，当前比较及记录预览才会发送到分析服务器和所选模型。
+              行。{publicDemo ? "原始文件只在浏览器读取和分析，不会上传。" : "原始文件只在浏览器读取。发送首个 AI 问题时，整个规范化内容表会上传到分析服务器，查询结果可能发送给所选模型。"}
             </p>
             {error && (
               <div role="alert" className="nh-alert">

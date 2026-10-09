@@ -87,6 +87,7 @@
     "vm-browserify": "^1.1.2"
   },
   "scripts": {
+    "build:demo": "vite build --config vite.demo.config.ts",
     "lint": "eslint -c eslint.config.js src/**/*.{ts,tsx} --fix",
     "start": "vite",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=8192 ROLLUP_NATIVE=0 vite build",
