@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+.env.*
+!.env.example
+py-src/data_formulator/dist/
+*.egg-info/
+.nexthook/
+playwright-report/
+test-results/
